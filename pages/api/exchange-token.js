@@ -9,10 +9,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Encode client_id:client_secret ke Base64
     const basicAuth = Buffer.from(`${process.env.ACCURATE_CLIENT_ID}:${process.env.ACCURATE_CLIENT_SECRET}`).toString('base64');
 
-    // POST request ke Accurate
     const tokenResponse = await axios.post(
       'https://account.accurate.id/oauth/token',
       new URLSearchParams({
@@ -30,14 +28,16 @@ export default async function handler(req, res) {
 
     const { access_token, refresh_token, expires_in, token_type } = tokenResponse.data;
 
-    res.status(200).json({
+    // ✅ Kirim semua informasi yang relevan
+    return res.status(200).json({
       access_token,
       refresh_token,
-      expires_in,
-      token_type
+      token_type,
+      expires_in
     });
+    
   } catch (error) {
     console.error('Error exchanging code:', error.response?.data || error.message);
-    res.status(500).json({ error: 'Failed to exchange authorization code' });
+    return res.status(500).json({ error: 'Failed to exchange authorization code' });
   }
 }
