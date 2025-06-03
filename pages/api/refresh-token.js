@@ -37,8 +37,7 @@ export default async function handler(req, res) {
       refresh_token: new_refresh_token,
       expires_in,
       token_type,
-      scope,
-      user
+      scope
     } = tokenResponse.data;
 
     return res.status(200).json({
@@ -46,8 +45,7 @@ export default async function handler(req, res) {
       refresh_token: new_refresh_token || refresh_token,
       token_type,
       expires_in,
-      scope,
-      user
+      scope
     });
   } catch (error) {
     console.error('Refresh token error:', error.response?.data || error.message);
