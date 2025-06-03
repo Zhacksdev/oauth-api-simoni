@@ -2,7 +2,11 @@
 import axios from 'axios';
 
 export default async function handler(req, res) {
-  const { refresh_token } = req.query;
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Gunakan metode POST' });
+  }
+
+  const { refresh_token } = req.body;
 
   if (!refresh_token) {
     return res.status(400).json({ error: 'Refresh token is required' });
@@ -25,7 +29,7 @@ export default async function handler(req, res) {
 
     const { access_token, expires_in, token_type, refresh_token: new_refresh_token } = tokenResponse.data;
 
-    res.status(200).json({
+    return res.status(200).json({
       access_token,
       expires_in,
       token_type,
@@ -33,6 +37,6 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error(error.response?.data || error.message);
-    res.status(500).json({ error: 'Failed to refresh token' });
+    return res.status(500).json({ error: 'Failed to refresh token' });
   }
 }
